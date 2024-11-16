@@ -1,0 +1,29 @@
+package com.example.newchat.service
+import com.example.newchat.entity.Message
+import com.example.newchat.repository.ChatRepository
+import com.example.newchat.repository.MessageRepository
+import com.example.newchat.repository.UserRepository
+import org.springframework.stereotype.Service
+
+@Service
+class MessageService(private val chatRepository: ChatRepository,
+                     private val userRepository: UserRepository,
+                     private val messageRepository: MessageRepository
+){
+
+    fun createMessage(user: Long, chat: Long, textMessage: String): Long{
+        val user1 = userRepository.findById(user).orElseThrow { RuntimeException("User not found") }
+        val chat1 = chatRepository.findById(chat).orElseThrow { RuntimeException("Chat not found") }
+        val newMessage = messageRepository.save(Message(chat = chat1, user = user1, textMessage = textMessage))
+        return newMessage.id
+    }
+
+    fun deleteMessage(id:Long): Boolean{
+        return if (messageRepository.existsById(id)) {
+            messageRepository.deleteById(id)
+            true
+        } else {
+            false
+        }
+    }
+}
