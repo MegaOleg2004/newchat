@@ -3,16 +3,15 @@ package com.example.newchat.controller
 import com.example.newchat.service.MessageService
 import com.example.newchat.service.UserService
 import com.example.newchat.dto.MessageRequest
+import com.example.newchat.entity.Message
 import com.example.newchat.service.ChatService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/chat/{chatId}")
+@RequestMapping("api/chat/{chatId}")
 class MessageController(
-    private val chatService: ChatService,
-    private val userService: UserService,
     private val messageService: MessageService
 ) {
 
@@ -38,5 +37,23 @@ class MessageController(
         } else {
             ResponseEntity.notFound().build()
         }
+    }
+
+    @GetMapping("/messages/{messageId}")
+    fun getMessageById(
+        @PathVariable chatId: Long,
+        @PathVariable messageId: Long
+    ): ResponseEntity<Message> {
+        val message = messageService.getMessageByIdAndChatId(messageId, chatId)
+        return if (message != null) {
+            ResponseEntity.ok(message)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+    @GetMapping("/messages")
+    fun getMessages(@PathVariable chatId: Long): ResponseEntity<List<Message>> {
+        val messages = messageService.getMessagesByChatId(chatId)
+        return ResponseEntity.ok(messages)
     }
 }

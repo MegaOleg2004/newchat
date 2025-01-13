@@ -26,4 +26,11 @@ class MessageService(private val chatRepository: ChatRepository,
             false
         }
     }
+
+    fun getMessageByIdAndChatId(messageId: Long, chatId: Long): Message? {
+        return messageRepository.findByIdAndChatId(messageId, chatId)
+    }
+    fun getMessagesByChatId(chatId: Long): List<Message> {
+        return messageRepository.findByChatId(chatId)
+    }
 }

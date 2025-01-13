@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Чат</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+  <h1>Чат</h1>
+  <div id="messagesContainer" class="messages-container"></div>
+
+  <form id="messageForm">
+    <textarea id="messageInput" placeholder="Введите сообщение" required></textarea>
+    <button type="submit">Отправить</button>
+  </form>
+
+  <button onclick="goBack()">Назад к чатам</button>
+</div>
+
+<script>
+  const chatId = new URLSearchParams(window.location.search).get("chatId");
+  if (!chatId) {
+      alert("Чат не найден");
+      window.location.href = "chats.html";
+  }
+
+  let currentUserId;
+
+  async function loadCurrentUser() {
+      const response = await fetch("api/chats/currentUser", { method: "GET" });
+      if (response.ok) {
+          currentUserId = await response.json();
+      } else {
+          alert("Ошибка при получении текущего пользователя");
+          window.location.href = "login.html";
+      }
+  }
+
+  async function loadMessages() {
+      const response = await fetch(`api/chat/${chatId}/messages`, { method: "GET" });
+      if (response.ok) {
+          const messages = await response.json();
+          const messagesContainer = document.getElementById("messagesContainer");
+          messagesContainer.innerHTML = "";
+
+          messages.forEach((message) => {
+              const messageElement = document.createElement("div");
+              messageElement.className = message.user.id === currentUserId ? "my-message" : "their-message";
+              messageElement.textContent = `${message.user.name}: ${message.textMessage}`;
+              messagesContainer.appendChild(messageElement);
+          });
+      } else {
+          alert("Ошибка при загрузке сообщений");
+      }
+  }
+
+  async function sendMessage(event) {
+      event.preventDefault();
+      const messageInput = document.getElementById("messageInput");
+      const textMessage = messageInput.value.trim();
+
+      if (!textMessage) return;
+
+      const response = await fetch(`api/chat/${chatId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user: currentUserId, textMessage }),
+      });
+
+      if (response.ok) {
+          messageInput.value = "";
+          loadMessages();
+      } else {
+          alert("Ошибка при отправке сообщения");
+      }
+  }
+
+  function goBack() {
+      window.location.href = "/chats";
+  }
+
+  document.getElementById("messageForm").addEventListener("submit", sendMessage);
+
+  loadCurrentUser().then(loadMessages);
+</script>
+</body>
+</html>

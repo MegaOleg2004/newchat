@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Вход</h1>
+    <form id="loginForm" action="/auth/login" method="POST">
+        <label for="username">Логин</label>
+        <input type="text" id="username" name="username" required placeholder="Введите логин">
+
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password" required placeholder="Введите пароль">
+
+        <button type="submit">Войти</button>
+    </form>
+    <p>Нет аккаунта? <a href="register">Зарегистрироваться</a></p>
+</div>
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+        e.preventDefault(); // Отключаем стандартное поведение формы
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        // Отправка данных на сервер
+        const response = await fetch("/auth/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (response.ok) {
+            // Если авторизация успешна, переходим к списку чатов
+            window.location.href = "/chats";
+        } else {
+            const error = await response.text();
+            alert("Ошибка: " + error); // Показываем сообщение об ошибке
+        }
+    });
+</script>
+</body>
+</html>

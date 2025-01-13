@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чаты</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Чаты</h1>
+
+    <h2>Ваши чаты</h2>
+    <ul id="existingChatsList"></ul>
+
+    <h2>Доступные пользователи</h2>
+    <ul id="availableUsersList"></ul>
+
+    <button onclick="logout()">Выйти</button>
+</div>
+
+<script>
+    let currentUserId;
+
+    async function loadCurrentUser() {
+        const response = await fetch("/api/chats/currentUser", { method: "GET" });
+
+        if (response.ok) {
+            currentUserId = await response.json();
+        } else {
+            alert("Ошибка при получении текущего пользователя");
+        }
+    }
+
+    async function loadChatsAndUsers() {
+        const response = await fetch("/api/chats/overview", { method: "GET" });
+
+        if (response.ok) {
+            const data = await response.json();
+            const existingChatsList = document.getElementById("existingChatsList");
+            const availableUsersList = document.getElementById("availableUsersList");
+
+            // Очищаем списки
+            existingChatsList.innerHTML = "";
+            availableUsersList.innerHTML = "";
+
+            // Заполняем список существующих чатов
+            data.chats.forEach(chat => {
+                const secondUser = chat.user1.id === currentUserId ? chat.user2 : chat.user1;
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `<a href="chat.html?chatId=${chat.id}">Чат с ${secondUser.name}</a>`;
+                existingChatsList.appendChild(listItem);
+            });
+
+            // Заполняем список доступных пользователей для создания чатов
+            data.users.forEach(user => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `${user.name} <button onclick="createChat(${user.id})">Начать чат</button>`;
+                availableUsersList.appendChild(listItem);
+            });
+        } else {
+            alert("Ошибка при загрузке данных");
+        }
+    }
+
+    async function createChat(userId) {
+        const response = await fetch("/api/chats", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user1: currentUserId, user2: userId }),
+        });
+
+        if (response.ok) {
+            alert("Чат создан!");
+            loadChatsAndUsers();
+        } else {
+            alert("Ошибка при создании чата");
+        }
+    }
+
+    async function logout() {
+        await fetch("/auth/logout", { method: "POST" });
+        window.location.href = "/auth/login";
+    }
+
+    loadCurrentUser().then(loadChatsAndUsers);
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Регистрация</h1>
+    <form id="registerForm" action="/auth/register" method="POST">
+        <label for="name">Имя</label>
+        <input type="text" id="name" name="name" required placeholder="Введите ваше имя">
+
+        <label for="age">Возраст</label>
+        <input type="number" id="age" name="age" required placeholder="Введите ваш возраст" min="1">
+
+        <label for="username">Логин</label>
+        <input type="text" id="username" name="username" required placeholder="Введите логин" minlength="5">
+
+        <label for="password">Пароль</label>
+        <input type="password" id="password" name="password" required placeholder="Введите пароль" minlength="8">
+
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    <p>Уже зарегистрированы? <a href="login">Войти</a></p>
+</div>
+<script>
+    document.getElementById('registerForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const age = document.getElementById('age').value;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, age, username, password }),
+        });
+
+        if (response.ok) {
+            alert('Регистрация успешна');
+            window.location.href = 'login'; // Переход на страницу входа
+        } else {
+            alert(await response.text());
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 package com.example.newchat.dto
 
-data class UserRequest(
+data class RegisterRequest(
     val name: String,
     val age: Int,
     val username: String,
-    val password: String,
+    val password: String
 )

@@ -1,5 +1,6 @@
 package com.example.newchat.entity
 import jakarta.persistence.*
+import jakarta.validation.constraints.NotBlank
 
 @Entity
 @Table(name = "messages")
@@ -17,6 +18,7 @@ data class Message (
     val user: User,
 
     @Column(name = "textMessage", nullable = false)
+    @field:NotBlank(message = "Сообщение не должно быть пустым")
     var textMessage: String = "",
 )
 {
