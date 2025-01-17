@@ -12,8 +12,8 @@ class MessageService(private val chatRepository: ChatRepository,
 ){
 
     fun createMessage(user: Long, chat: Long, textMessage: String): Long{
-        val user1 = userRepository.findById(user).orElseThrow { RuntimeException("User not found") }
-        val chat1 = chatRepository.findById(chat).orElseThrow { RuntimeException("Chat not found") }
+        val user1 = userRepository.findById(user).orElseThrow { RuntimeException("Пользователь не найден") }
+        val chat1 = chatRepository.findById(chat).orElseThrow { RuntimeException("Чат не найден") }
         val newMessage = messageRepository.save(Message(chat = chat1, user = user1, textMessage = textMessage))
         return newMessage.id
     }

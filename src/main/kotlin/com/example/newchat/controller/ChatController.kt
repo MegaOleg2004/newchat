@@ -56,15 +56,12 @@ class ChatController (private val chatService: ChatService, private val userServ
         val userId = session.getAttribute("userId") as? Long
             ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
 
-        // Все чаты текущего пользователя
         val userChats = chatService.getAllChats()
             .filter { it.user1.id == userId || it.user2.id == userId }
 
-        // ID пользователей, с которыми уже есть чаты
         val chatUserIds = userChats.flatMap { listOf(it.user1.id, it.user2.id) }
             .filter { it != userId }
 
-        // Пользователи, с которыми еще нет чатов
         val availableUsers = userService.getAllUsers()
             .filter { it.id != userId && it.id !in chatUserIds }
 

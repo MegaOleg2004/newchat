@@ -13,22 +13,22 @@ class SecurityConfig {
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .securityContext { context ->
-                context.requireExplicitSave(false) // Автоматическое сохранение SecurityContext
+                context.requireExplicitSave(false)
             }
             .sessionManagement { session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Создаём сессию только если требуется
+                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             }
-            .csrf { it.disable() } // Отключаем CSRF (если не используется)
+            .csrf { it.disable() }
             .authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/auth/register", "/auth/login", "styles.css", "/css/**", "/js/**", "/images/**").permitAll() // Эти маршруты доступны всем
-                    .anyRequest().authenticated() // Остальные требуют авторизации
+                    .requestMatchers("/auth/register", "/auth/login", "styles.css", "/css/**", "/js/**", "/images/**").permitAll()
+                    .anyRequest().authenticated()
             }
-            .formLogin { it.disable() } // Отключаем встроенную форму логина
+            .formLogin { it.disable() }
             .logout { logout ->
                 logout
                     .logoutUrl("/auth/logout")
-                    .logoutSuccessUrl("/auth/login") // После выхода перенаправляем на страницу входа
+                    .logoutSuccessUrl("/auth/login")
             }
         return http.build()
     }

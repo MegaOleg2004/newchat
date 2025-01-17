@@ -32,7 +32,6 @@ class AuthController(private val userService: UserService) {
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext())
         session.setAttribute("userId", user.id)
 
-        println("Сессия: ${session.id}, Пользователь: ${session.getAttribute("user")}")
         return ResponseEntity.ok("Добро пожаловать, ${user.name}")
     }
     @PostMapping("/register")
@@ -48,19 +47,17 @@ class AuthController(private val userService: UserService) {
 
     @PostMapping("/logout")
     fun logout(session: HttpSession): ResponseEntity<String> {
-        session.invalidate() // Удаляем сессию
+        session.invalidate()
         return ResponseEntity.ok("Вы успешно вышли")
     }
 
     @GetMapping("/register")
     fun registerPage(): String {
-        // Возвращаем страницу регистрации (например, HTML-файл)
-        return "register" // Укажите имя файла из папки ресурсов
+        return "register"
     }
 
     @GetMapping("/login")
     fun loginPage(): String {
-        // Возвращаем страницу логина
-        return "login" // Укажите имя файла из папки ресурсов
+        return "login"
     }
 }

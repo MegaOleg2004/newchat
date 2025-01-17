@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam
 class ChatPageController {
     @GetMapping("/chats")
     fun chatsPage(): String {
-        return "chats" // chats.html в папке templates
+        return "chats"
     }
     @GetMapping("/chat.html")
     fun chatPage(@RequestParam("chatId") chatId: Long?, model: Model): String {
-        model.addAttribute("chatId", chatId) // передача параметра в шаблон
-        return "chat" // возвращает chat.html из templates
+        model.addAttribute("chatId", chatId)
+        return "chat"
     }
 }

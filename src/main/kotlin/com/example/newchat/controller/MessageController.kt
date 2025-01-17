@@ -1,10 +1,8 @@
 package com.example.newchat.controller
 
 import com.example.newchat.service.MessageService
-import com.example.newchat.service.UserService
 import com.example.newchat.dto.MessageRequest
 import com.example.newchat.entity.Message
-import com.example.newchat.service.ChatService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
