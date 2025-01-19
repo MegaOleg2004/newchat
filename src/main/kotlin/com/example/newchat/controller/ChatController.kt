@@ -22,6 +22,7 @@ class ChatController (private val chatService: ChatService, private val userServ
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         }
     }
+
     @PostMapping
     fun createChat(@RequestBody request: ChatRequest): ResponseEntity<Long>{
         val id = chatService.createChat(request.user1, request.user2)
@@ -51,6 +52,7 @@ class ChatController (private val chatService: ChatService, private val userServ
             ResponseEntity(HttpStatus.NOT_FOUND)
         }
     }
+
     @GetMapping("/overview")
     fun getChatsOverview(session: HttpSession): ResponseEntity<Map<String, Any>> {
         val userId = session.getAttribute("userId") as? Long
@@ -72,5 +74,4 @@ class ChatController (private val chatService: ChatService, private val userServ
             )
         )
     }
-
 }

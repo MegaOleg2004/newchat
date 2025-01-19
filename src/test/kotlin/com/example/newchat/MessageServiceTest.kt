@@ -54,7 +54,7 @@ class MessageServiceTest {
 
         val result = messageService.createMessage(userId, chatId, textMessage)
 
-        assertEquals(messageId, result) // Проверка, что возвращается корректный ID сообщения
+        assertEquals(messageId, result)
 
         verify(userRepository).findById(userId)
         verify(chatRepository).findById(chatId)
@@ -63,7 +63,6 @@ class MessageServiceTest {
 
     @Test
     fun `test createMessage with missing user`() {
-        // Given
         val userId = 1L
         val chatId = 1L
         val textMessage = "Hello, world!"
